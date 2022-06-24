@@ -3,7 +3,7 @@
 Tap and install with
 
 ```
-brew install michael-simons/homebrew-seabolt/seabolt
+brew install wmaciejak/homebrew-seabolt/seabolt
 ```
 
 Afterwards, `seabolt-cli` is available on the path and you can run queries like this:
