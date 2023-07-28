@@ -72,3 +72,27 @@ index 41204c2..6c7db84 100644
  #endif
  
  enum Command {
+diff --git a/src/common/tests/catch.hpp b/src/common/tests/catch.hpp
+index 52201a3..30d6cd7 100644
+--- a/src/common/tests/catch.hpp
++++ b/src/common/tests/catch.hpp
+@@ -1368,7 +1368,18 @@ namespace Catch {
+
+ #ifdef CATCH_PLATFORM_MAC
+
+-    #define CATCH_TRAP() __asm__("int $3\n" : : ) /* NOLINT */
++    #if defined(__ppc64__) || defined(__ppc__)
++        #define CATCH_TRAP() \
++                __asm__("li r0, 20\nsc\nnop\nli r0, 37\nli r4, 2\nsc\nnop\n" \
++                : : : "memory","r0","r3","r4" )
++    // backported from Catch2
++    // revision b9853b4b356b83bb580c746c3a1f11101f9af54f
++    // src/catch2/internal/catch_debugger.hpp
++    #elif defined(__i386__) || defined(__x86_64__)
++        #define CATCH_TRAP() __asm__("int $3\n" : : ) /* NOLINT */
++    #elif defined(__aarch64__)
++        #define CATCH_TRAP()  __asm__(".inst 0xd4200000")
++    #endif
+
+ #elif defined(CATCH_PLATFORM_LINUX)
+     // If we can use inline assembler, do it because this allows us to break
